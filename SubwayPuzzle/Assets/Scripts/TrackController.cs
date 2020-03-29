@@ -17,7 +17,7 @@ public class TrackController : MonoBehaviour,
                                ITrackController,
                                ISerializationCallbackReceiver
 {
-    [Header("Where the track's ends point initially.")]
+    [Header("The track's initial orientation.")]
 
     [SerializeField]
     [Tooltip("One of the track's initial directions.")]
