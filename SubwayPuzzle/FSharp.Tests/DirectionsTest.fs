@@ -9,7 +9,7 @@ module ``CardinalDirection tests`` =
 
     [<Property>]
     let ``AsEnum inverse of From`` e =
-        CardinalDirection.From(e).AsEnum() = e
+        CardinalDirection.From(e).AsEnum = e
 
     [<Property>]
     let ``RotatedBy RotationTo correct`` (d1 : CardinalDirection) d2 =
@@ -29,7 +29,14 @@ module ``CardinalDirection tests`` =
 
 [<TestFixture>]
 module ``Clock4Direction tests`` =
-    
+
+    [<Test>]
+    let ``CountClockwise correct`` () =
+        Assert.AreEqual(0, Cw0.CountClockwise)
+        Assert.AreEqual(1, Cw1.CountClockwise)
+        Assert.AreEqual(2, Cw2.CountClockwise)
+        Assert.AreEqual(3, Cw3.CountClockwise)
+
     [<Property>]
     let ``AsEnum inverse of From`` e =
-        Clock4Direction.From(e).AsEnum() = e
+        Clock4Direction.From(e).AsEnum = e

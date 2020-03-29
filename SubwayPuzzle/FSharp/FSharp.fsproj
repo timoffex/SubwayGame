@@ -9,7 +9,7 @@
       <CustomCommands>
         <Command>
           <type>AfterBuild</type>
-          <command>cp ${TargetPath} ${SolutionDir}/../Assets/</command>
+          <command>cp ${TargetPath} ${SolutionDir}/Assets/</command>
         </Command>
       </CustomCommands>
     </CustomCommands>

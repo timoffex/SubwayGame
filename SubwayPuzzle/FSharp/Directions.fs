@@ -20,7 +20,7 @@ type CardinalDirection = North | East | South | West with
         | West  -> "West"
 
     /// This value as a CardinalDirectionE.
-    member this.AsEnum() =
+    member this.AsEnum =
         match this with
         | North -> CardinalDirectionE.North
         | East  -> CardinalDirectionE.East
@@ -52,8 +52,11 @@ type Clock4DirectionE =
 
 /// A difference between two cardinal directions.
 type Clock4Direction = Cw0 | Cw1 | Cw2 | Cw3 with
+    /// The number of clockwise rotations this represents.
+    member this.CountClockwise = int this.AsEnum
+
     /// This value as a Clock4DirectionE.
-    member this.AsEnum() =
+    member this.AsEnum =
         match this with
         | Cw0 -> Clock4DirectionE.Cw0
         | Cw1 -> Clock4DirectionE.Cw1

@@ -131,39 +131,7 @@ public class TrackController : MonoBehaviour,
         if (p1.Shape != p2.Shape)
             throw new ArgumentException("Pieces have different shapes.");
 
-        switch (p1.Shape)
-        {
-            case TrackShape.Straight:
-                var p1d = p1.Directions.Item1;
-                var p2d = p2.Directions.Item1;
-
-                // If the directions differ by two clockwise rotations, the
-                // pieces are the same (since they're straight). Otherwise,
-                // they differ by one clockwise rotation.
-                return (int)p1d.RotationTo(p2d).AsEnum() % 2;
-            case TrackShape.Elbow:
-                (var p1d1, var p1d2) = p1.Directions;
-                (var p2d1, var p2d2) = p2.Directions;
-
-                var rotLeg1 = p1d1.RotationTo(p2d1);
-                var rotLeg2 = p1d2.RotationTo(p2d2);
-
-                if (rotLeg1 == rotLeg2)
-                {
-                    // This rotation matches up both legs of both pieces.
-
-                    // TODO: Rename AsEnum() to CountClockwiseRotations
-                    return (int)rotLeg1.AsEnum();
-                }
-                else
-                {
-                    // Matching p1d1 to p2d1 does not match p1d2 to p2d2, so
-                    // we must instead match p1d1 to p2d2.
-                    return (int)p1d1.RotationTo(p2d2).AsEnum();
-                }
-            default:
-                throw new InvalidOperationException("The impossible happened.");
-        }
+        return p1.RotationTo(p2).CountClockwise;
     }
 
     private void OnValidate()

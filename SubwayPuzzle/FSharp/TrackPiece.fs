@@ -50,6 +50,34 @@ type TrackPiece =
         let (d1, d2) = this.Directions
         TrackPiece.FromDirections(d1.RotatedBy(c), d2.RotatedBy(c))
 
+    /// Computes the rotation to the given track piece.
+    ///
+    /// The track piece must have the same shape as this, or else an
+    /// ArgumentError is thrown.
+    member this.RotationTo(p : TrackPiece) =
+        do
+            if p.Shape <> this.Shape then
+                invalidArg "p" "Cannot compute rotation between tracks of \
+                                different shapes."
+        let (d1, d2) = this.Directions
+        let (p1, p2) = p.Directions
+
+        match this.Shape with
+        | TrackShape.Elbow ->
+            let r1 = d1.RotationTo(p1)
+            let r2 = d2.RotationTo(p2)
+
+            if r1 = r2
+            // Matching d1 and p1 matches d2 and p2.
+            then r1
+            // d1 should be matched to p2.
+            else d1.RotationTo(p2)
+        | TrackShape.Straight ->
+            match d1.RotationTo(p1) with
+            | Cw0 | Cw2 -> Cw0
+            | Cw1 | Cw3 -> Cw1
+        | _ -> invalidOp "Invalid shape (programming error)"
+
     /// Creates a TrackPiece from the given directions.
     ///
     /// The arguments must be distinct directions, or an error is thrown.
