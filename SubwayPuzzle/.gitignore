@@ -71,3 +71,5 @@ crashlytics-build.properties
 
 # Emacs save files
 \#*\#
+
+add_fsharp_to_sln.sh.last_run
