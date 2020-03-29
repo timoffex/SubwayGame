@@ -138,6 +138,9 @@ public class TrackController : MonoBehaviour,
     {
         if (direction1 == direction2)
         {
+            Debug.LogWarning(
+                "Track directions were adjusted because they were the same.",
+                this);
             if (direction1 == XZDirection.PositiveZ)
                 direction2 = XZDirection.NegativeZ;
             else
