@@ -16,11 +16,10 @@ public class AddProjectsToSln : AssetPostprocessor
     /// It must be public and inside an AssetPostprocessor.
     /// Its return value is the new content of the .sln file.
     /// </summary>
+    /// <param name="path">The path to the generated .sln file.</param>
+    /// <param name="content">The content of the generated .sln file.</param>
     public static string OnGeneratedSlnSolution(string path, string content)
     {
-        // path is the path to the .sln file
-        // content is the content of the .sln file
-
         var projectDirectory = Directory.GetParent(path).FullName;
         var scriptPath = Path.Combine(projectDirectory, "add_fsharp_to_sln.sh");
 

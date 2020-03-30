@@ -38,8 +38,8 @@ public class TrackControllerConfiguration : ISerializationCallbackReceiver
     /// If there is an error, then all deserialized properties are set to null
     /// and an exception is thrown.
     ///
-    /// If <paramref name="fixProperties"/> is set, this may change the
-    /// serialized fields to avoid errors in the futures.
+    /// If <paramref name="fixProperties"/> is set, this will prefer to fix
+    /// properties and log a debug message when possible.
     /// </summary>
     public void Deserialize(bool fixProperties = false)
     {
@@ -49,17 +49,24 @@ public class TrackControllerConfiguration : ISerializationCallbackReceiver
             {
                 if (fixProperties)
                 {
+                    Debug.LogWarning(
+                        "The directions configured on a track piece were the" +
+                        " same, so they were changed automatically.");
                     if (direction1 == XZDirection.PositiveZ)
                     {
                         direction2 = XZDirection.NegativeZ;
-                    } else
+                    }
+                    else
                     {
                         direction2 = XZDirection.PositiveZ;
                     }
                 }
-
-                throw new InvalidOperationException(
-                    "The directions of a track piece cannot both be the same.");
+                else
+                {
+                    throw new InvalidOperationException(
+                        "The directions of a track piece cannot both be the" +
+                        " same.");
+                }
             }
 
             InitialTrackPiece = TrackPiece.FromDirections(
