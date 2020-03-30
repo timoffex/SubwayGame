@@ -17,31 +17,8 @@ public class TrackController : MonoBehaviour,
                                ITrackController,
                                ISerializationCallbackReceiver
 {
-    [Header("The track's initial orientation.")]
-
     [SerializeField]
-    [Tooltip("One of the track's initial directions.")]
-    private XZDirection direction1;
-
-    [SerializeField]
-    [Tooltip("One of the track's initial directions.")]
-    private XZDirection direction2;
-
-    [Header("Names of animator variables.")]
-
-    [SerializeField]
-    [Tooltip("A boolean animation property defining whether this is"
-            + " highlighted.")]
-    private string highlightProp = "Highlight";
-
-    [Explanation("When a rotation animation finishes, it should invoke the" +
-        " FinishRotating() method on this script through an animation event.")]
-    [SerializeField]
-    [Tooltip("An integer animation property defining how many times this "
-            + " should be rotated from its initial position. The valid values "
-            + " are 0, 1, 2, or 3 for elbow-shaped pieces and 0 or 1 for"
-            + " straight pieces.")]
-    private string orientationProp = "Orientation";
+    private TrackControllerConfiguration configuration;
 
     /// <summary>
     /// Called by the animator to indicate that the piece finished rotating.
@@ -50,18 +27,27 @@ public class TrackController : MonoBehaviour,
     {
         // Set rotationTask to null before finishing it because IsReorienting
         // is expected to change before the task is finished.
-        var x = rotationTask;
-        rotationTask = null;
+        var x = _rotationTask;
+        _rotationTask = null;
         x.SetResult(null);
     }
+
+    /// <summary>
+    /// The path a train takes when moving along this 3D model.
+    ///
+    /// The path is oriented for a train coming from the first direction in
+    /// <see cref="TrackPiece.Directions"/> and heading out through the
+    /// second direction.
+    /// </summary>
+    public PointPath TrainPath => configuration.TrainPath;
 
     #region ITrackController
     public TrackPiece TrackPiece { get; private set; }
 
-    public bool IsReorienting => rotationTask != null;
+    public bool IsReorienting => _rotationTask != null;
 
     public bool SupportsOrientation(TrackPiece piece) =>
-        supportedShapes.Contains(piece);
+        _supportedShapes.Contains(piece);
 
     public Task OrientTo(TrackPiece piece)
     {
@@ -69,16 +55,16 @@ public class TrackController : MonoBehaviour,
             return null;
 
         // Task may already be done or canceled, so use TrySetCanceled().
-        rotationTask?.TrySetCanceled();
+        _rotationTask?.TrySetCanceled();
 
         TrackPiece = piece;
 
-        rotationTask = new TaskCompletionSource<object>();
-        animator.SetInteger(
-            orientationProp,
-            GetOrientation(initialShape, TrackPiece));
+        _rotationTask = new TaskCompletionSource<object>();
+        _animator.SetInteger(
+            configuration.orientationProp,
+            GetOrientation(configuration.InitialTrackPiece, TrackPiece));
 
-        return rotationTask.Task;
+        return _rotationTask.Task;
     }
 
     private bool highlighted;
@@ -87,7 +73,7 @@ public class TrackController : MonoBehaviour,
         get => highlighted;
         set
         {
-            animator.SetBool(highlightProp, value);
+            _animator.SetBool(configuration.highlightProp, value);
             highlighted = value;
         }
     }
@@ -103,26 +89,16 @@ public class TrackController : MonoBehaviour,
     void ISerializationCallbackReceiver.OnBeforeSerialize() { }
     void ISerializationCallbackReceiver.OnAfterDeserialize()
     {
-        if (direction1 == direction2)
+        var initialShape = configuration.InitialTrackPiece;
+
+        TrackPiece = initialShape;
+        _supportedShapes = new HashSet<TrackPiece>
         {
-            Debug.LogError("The directions of a track piece cannot both be"
-                          + " the same.", this);
-            initialShape = TrackPiece = null;
-            supportedShapes = new HashSet<TrackPiece>();
-        }
-        else
-        {
-            initialShape = TrackPiece = TrackPiece.FromDirections(
-                CardinalDirection.From((CardinalDirectionE)direction1),
-                CardinalDirection.From((CardinalDirectionE)direction2));
-            supportedShapes = new HashSet<TrackPiece>
-            {
-                initialShape,
-                initialShape.RotatedBy(Clock4Direction.Cw1),
-                initialShape.RotatedBy(Clock4Direction.Cw2),
-                initialShape.RotatedBy(Clock4Direction.Cw3),
-            };
-        }
+            initialShape,
+            initialShape.RotatedBy(Clock4Direction.Cw1),
+            initialShape.RotatedBy(Clock4Direction.Cw2),
+            initialShape.RotatedBy(Clock4Direction.Cw3),
+        };
     }
     #endregion
 
@@ -134,23 +110,9 @@ public class TrackController : MonoBehaviour,
         return p1.RotationTo(p2).CountClockwise;
     }
 
-    private void OnValidate()
-    {
-        if (direction1 == direction2)
-        {
-            Debug.LogWarning(
-                "Track directions were adjusted because they were the same.",
-                this);
-            if (direction1 == XZDirection.PositiveZ)
-                direction2 = XZDirection.NegativeZ;
-            else
-                direction2 = XZDirection.PositiveZ;
-        }
-    }
-
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
     }
 
     private void OnMouseUp()
@@ -170,20 +132,14 @@ public class TrackController : MonoBehaviour,
         OnHoveredChange?.Invoke(false);
     }
 
-    private TrackPiece initialShape;
-    private HashSet<TrackPiece> supportedShapes;
+    private HashSet<TrackPiece> _supportedShapes;
 
     /// <summary>
     /// The task for the rotation animation.
     ///
     /// This is null iff no animation is going on right now.
     /// </summary>
-    private TaskCompletionSource<object> rotationTask;
+    private TaskCompletionSource<object> _rotationTask;
 
-    private Animator animator;
-}
-
-public enum XZDirection
-{
-    PositiveZ = 0, PositiveX, NegativeZ, NegativeX
+    private Animator _animator;
 }

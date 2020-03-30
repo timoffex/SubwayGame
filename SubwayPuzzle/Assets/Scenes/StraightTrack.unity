@@ -309,10 +309,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76b07599e2f934b1e829492924679b09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction1: 1
-  direction2: 3
-  highlightProp: Highlight
-  orientationProp: Orientation
+  configuration:
+    direction1: 3
+    direction2: 1
+    highlightProp: Highlight
+    orientationProp: Orientation
+    serializedTrainPath:
+      _points: []
 --- !u!95 &1033186351
 Animator:
   serializedVersion: 3
