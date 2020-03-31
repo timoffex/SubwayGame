@@ -81,8 +81,9 @@ public class TrackControllerConfiguration : ISerializationCallbackReceiver
             else
             {
                 TrainPath = serializedTrainPath.AsPointPath.Reversed;
-            }            
-        } catch (Exception)
+            }
+        }
+        catch (Exception)
         {
             InitialTrackPiece = null;
             TrainPath = null;
@@ -99,24 +100,26 @@ public class TrackControllerConfiguration : ISerializationCallbackReceiver
     #region Serialized fields
     [Header("The track's initial orientation.")]
 
-    [Tooltip("One of the track's initial directions.")]
+    [Tooltip("One of the track's directions in its initial, unrotated state.")]
+    [InspectorName(Direction1Name)]
     public XZDirection direction1;
 
-    [Tooltip("One of the track's initial directions.")]
+    [Tooltip("One of the track's directions in its initial, unrotated state.")]
+    [InspectorName(Direction2Name)]
     public XZDirection direction2;
 
-    [Header("Names of animator variables.")]
+    [Header("Names of animator parameters.")]
 
-    [Tooltip("A boolean animation property defining whether this is"
+    [Tooltip("A boolean animation parameter defining whether this is"
             + " highlighted.")]
     public string highlightProp = "Highlight";
 
     [Explanation("When a rotation animation finishes, it should invoke the" +
         " FinishRotating() method on this script through an animation event.")]
-    [Tooltip("An integer animation property defining how many times this "
-            + " should be rotated from its initial position. The valid values "
-            + " are 0, 1, 2, or 3 for elbow-shaped pieces and 0 or 1 for"
-            + " straight pieces.")]
+    [Tooltip("An integer animation parameter defining how many times this" +
+        " should be rotated clockwise from its initial position. The" +
+        " valid values are 0, 1, 2, or 3 for elbow-shaped pieces and 0 or 1 for" +
+        " straight pieces.")]
     public string orientationProp = "Orientation";
 
     /// <summary>
@@ -127,7 +130,12 @@ public class TrackControllerConfiguration : ISerializationCallbackReceiver
     ///
     /// See <see cref="TrainPath"/>.
     /// </summary>
-    //[HideInInspector]
+    [Tooltip("The path a train takes when moving along the track model" +
+        " from " + Direction1Name + " going toward " + Direction2Name + ".")]
+    [InspectorName("Train Path")]
     public SerializedPointPath serializedTrainPath;
     #endregion
+
+    private const string Direction1Name = "Direction 1";
+    private const string Direction2Name = "Direction 2";
 }
