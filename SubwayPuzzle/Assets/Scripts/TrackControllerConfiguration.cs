@@ -127,7 +127,7 @@ public class TrackControllerConfiguration : ISerializationCallbackReceiver
     ///
     /// See <see cref="TrainPath"/>.
     /// </summary>
-    [HideInInspector]
+    //[HideInInspector]
     public SerializedPointPath serializedTrainPath;
     #endregion
 }

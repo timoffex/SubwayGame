@@ -17,8 +17,7 @@ public class TrackController : MonoBehaviour,
                                ITrackController,
                                ISerializationCallbackReceiver
 {
-    [SerializeField]
-    private TrackControllerConfiguration configuration;
+    public TrackControllerConfiguration configuration;
 
     /// <summary>
     /// Called by the animator to indicate that the piece finished rotating.

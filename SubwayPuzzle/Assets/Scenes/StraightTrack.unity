@@ -315,7 +315,9 @@ MonoBehaviour:
     highlightProp: Highlight
     orientationProp: Orientation
     serializedTrainPath:
-      _points: []
+      _points:
+      - {x: 31.79, y: 0, z: 0}
+      - {x: -20.36, y: 0, z: 0}
 --- !u!95 &1033186351
 Animator:
   serializedVersion: 3

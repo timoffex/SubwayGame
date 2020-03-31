@@ -32,6 +32,12 @@ public sealed class PointPath : IEnumerable<Vector3>
         _points = points.ToArray();
     }
 
+    /// <summary>
+    /// Applies the transformation to the points in the path.
+    /// </summary>
+    public PointPath Map(Func<Vector3, Vector3> transformation) =>
+        new PointPath(this.Select(transformation));
+
     #region IEnumerable
     public IEnumerator<Vector3> GetEnumerator()
     {
