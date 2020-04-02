@@ -73,3 +73,7 @@ crashlytics-build.properties
 \#*\#
 
 add_fsharp_to_sln.sh.last_run
+
+# Blender backup files
+*.blend1
+*.blend1.meta
