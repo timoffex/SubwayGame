@@ -7,6 +7,8 @@ using System.Collections.Generic;
 
 public class LevelController : MonoBehaviour
 {
+    public LevelControllerConfiguration configuration;
+
     private void OnEnable()
     {
         trackControllers = new HashSet<ITrackController>(

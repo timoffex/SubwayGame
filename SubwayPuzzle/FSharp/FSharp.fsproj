@@ -17,6 +17,7 @@
   <ItemGroup>
     <Compile Include="Directions.fs" />
     <Compile Include="TrackPiece.fs" />
+    <Compile Include="TrackGrid.fs" />
   </ItemGroup>
 
   <ItemGroup>
